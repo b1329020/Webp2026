@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>HW2</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        table {
+            font-family: Arial, Helvetica, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        td, th {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            background-color: #04AA6D;
+            color: white;
+        }
+        tr:nth-child(even) { background-color: #f2f2f2; }
+        tr:hover { background-color: #ddd; }
+        
+        .course-btn {
+            background: none;
+            border: none;
+            color: #0d6efd;
+            text-decoration: underline;
+            cursor: pointer;
+            padding: 0;
+        }
+    </style>
+</head>
+<body class="p-4">
+
+    <h2 class="text-center mb-4">資工選課表</h2>
+
+    <table id="csie">
+        <thead>
+            <tr>
+                <th>開課單位</th>
+                <th>課程名稱</th>
+                <th>授課教師</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>資工系</td>
+                <td>
+                    <button class="course-btn" 
+                            data-bs-toggle="popover" 
+                            title="物件導向軟體設計" 
+                            data-bs-content="科目代號：IT3004(3) | 時間：週五 09:10-12:00 | 教室：資工系電腦教室2">
+                        物件導向軟體設計
+                    </button>
+                </td>
+                <td>黃崇源</td>
+            </tr>
+            <tr>
+                <td>資工系</td>
+                <td>計算機網路實驗</td>
+                <td>李春良</td>
+            </tr>
+            <tr>
+                <td>資工系</td>
+                <td>作業系統實務</td>
+                <td>張哲維</td>
+            </tr>
+            <tr>
+                <td>資工系</td>
+                <td>生物統計</td>
+                <td>陳光武</td>
+            </tr>
+            <tr>
+                <td>資工系</td>
+                <td>通訊系統</td>
+                <td>陳仁暉</td>
+            </tr>
+            <tr>
+                <td>資工系</td>
+                <td>軟硬體專題(2)</td>
+                <td>魏志達</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="text-center">
+        <button class="btn btn-primary" onclick="changeResult()">Change</button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+        var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+            return new bootstrap.Popover(popoverTriggerEl)
+        })
+
+        function changeResult() {
+            var myTable = document.getElementById("csie");
+            myTable.rows[1].cells[2].innerHTML = "李春良";
+        }
+    </script>
+</body>
+</html>
