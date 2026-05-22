@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>景點觀光展覽資訊 - 長庚大學作業</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; padding: 50px 0; }
+        .container { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .table thead { background-color: #0d6efd; color: white; }
+        .pagination-info { font-weight: bold; color: #495057; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1 class="text-center mb-4">景點觀光展覽資訊</h1>
+
+    <div class="row mb-4 justify-content-center">
+        <div class="col-md-6">
+            <div class="input-group">
+                <span class="input-group-text">名稱搜尋</span>
+                <input type="text" id="searchInput" class="form-control" placeholder="輸入關鍵字後按 Enter...">
+            </div>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table id="csie" class="table table-striped table-hover align-middle">
+            <thead>
+                <tr>
+                    <th style="width: 40%">名稱</th>
+                    <th style="width: 40%">地點</th>
+                    <th style="width: 20%">票價</th>
+                </tr>
+            </thead>
+            <tbody id="dataList">
+                </tbody>
+        </table>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mt-4">
+        <button id="prevPage" class="btn btn-outline-primary px-4">← 上一頁</button>
+        <div id="pageInfo" class="pagination-info">目前第 1 頁 / 總共 1 頁</div>
+        <button id="nextPage" class="btn btn-outline-primary px-4">下一頁 →</button>
+    </div>
+</div>
+
+<script>
+    var allData = [];
+var filteredData = [];
+var currentPage = 1;
+var rowsPerPage = 10;
+
+function loadData() {
+    var xhr = new XMLHttpRequest();
+    var openUrl = "https://cloud.culture.tw/frontsite/trans/SearchShowAction.do?method=doFindTypeJ&category=6";
+    
+    xhr.open('GET', openUrl, true);
+    xhr.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            console.log("資料下載成功");
+            allData = JSON.parse(this.responseText);
+            filteredData = allData;
+            renderTable();
+        } else if (this.readyState == 4) {
+            console.log("連線失敗，狀態碼：" + this.status);
+        }
+    };
+    xhr.send();
+}
+
+function renderTable() {
+    var myTableBody = document.getElementById("dataList");
+    if (!myTableBody) {
+        console.log("錯誤：找不到 id 為 dataList 的 tbody");
+        return;
+    }
+    
+    myTableBody.innerHTML = ""; // 清空
+
+    var start = (currentPage - 1) * rowsPerPage;
+    var end = start + rowsPerPage;
+    var pagedData = filteredData.slice(start, end);
+
+    pagedData.forEach(function(item) {
+        var row = myTableBody.insertRow();
+        row.insertCell(0).innerText = item.title;
+        row.insertCell(1).innerText = item.showInfo[0] ? item.showInfo[0].location : "無地點資訊";
+        row.insertCell(2).innerText = item.showInfo[0] ? item.showInfo[0].price : "無票價資訊";
+    });
+
+    // 更新分頁資訊
+    var totalPages = Math.ceil(filteredData.length / rowsPerPage) || 1;
+    document.getElementById("pageInfo").innerText = "目前第 " + currentPage + " 頁 / 總共 " + totalPages + " 頁";
+}
+
+// 綁定按鈕事件
+document.getElementById("prevPage").onclick = function() {
+    if (currentPage > 1) {
+        currentPage--;
+        renderTable();
+    }
+};
+
+document.getElementById("nextPage").onclick = function() {
+    var totalPages = Math.ceil(filteredData.length / rowsPerPage);
+    if (currentPage < totalPages) {
+        currentPage++;
+        renderTable();
+    }
+};
+
+// 搜尋功能
+document.getElementById("searchInput").onchange = function(e) {
+    var keyword = e.target.value.toLowerCase();
+    filteredData = allData.filter(function(item) {
+        return item.title.toLowerCase().indexOf(keyword) > -1;
+    });
+    currentPage = 1;
+    renderTable();
+};
+
+// 一開始先執行載入
+loadData();
+</script>
+</body>
+</html>
